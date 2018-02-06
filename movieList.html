@@ -9,7 +9,17 @@
 $(document).ready(function(){
 alert("hello");
 
-	
+	$.ajax({
+		type: 'GET',
+		url:'https://poojaladge.github.io/MovieShow/movieList.xml',
+		dataType:'xml',
+		sucess: function(xml){
+			alert("hello");		
+
+		}
+
+	});
+
 
 
 
