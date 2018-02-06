@@ -11,10 +11,10 @@ alert("hello");
 
 	$.ajax({
 		type: 'GET',
-		url:'https://poojaladge.github.io/MovieShow/movieList.xml',
-		dataType:'xml',
-		sucess: function(xml){
-			alert("hello");		
+		url:'http://theapache64.com/movie_db/search?keyword=Ironman',
+		dataType:'json',
+		sucess: function(data){
+			alert(data);		
 
 		}
 
