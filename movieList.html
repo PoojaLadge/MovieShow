@@ -9,18 +9,10 @@
 $(document).ready(function(){
 alert("hello");
 
-	$.ajax({
-		type: 'GET',
-		url:'http://theapache64.com/movie_db/search?keyword=Ironman',
-		dataType:'json',
-		sucess: function(data){
-			alert(data);		
+	$.getJSON('http://theapache64.com/movie_db/search?keyword=Ironman', function(data) {
 
-		}
-
-	});
-
-
+alert(data);    
+});
 
 
 });
