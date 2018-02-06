@@ -1,0 +1,34 @@
+<html>
+<title>Movie List</title>
+<head>
+<script type="text/javascript" src="https:///ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+</script>
+<script>
+
+
+$(document).ready(function(){
+
+
+	$.ajax({
+		type: 'GET',
+		url:'http://theapache64.com/movie_db/search?keyword=Titanic',
+		dataType:'json',
+		sucess: function(xml){
+			alert("hello");		
+
+		}
+
+	});
+
+
+
+
+});
+</script>
+</head>
+<body>
+<form name="movieForm">
+<input type="text" id="search" name="search" pattern="[a-zA-Z0-9./+'&@-]+" maxlenght="100" required >
+</form>
+</body>
+</html>
