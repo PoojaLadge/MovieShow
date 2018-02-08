@@ -62,7 +62,7 @@ function ListMovies(flag){	//list all movies from json
 		movieBlock = movieBlock.concat('<div class="addMovie"><input type="text" value="" id="addSearch"><input type="button" value="Add New Search" placeholder="Enter Movie Name" onclick="addMovie()"></div>');
 	}
 	if(movieBlock == ""){
-		alert("No sunch movie found");
+		alert("No such movie found");
 		return;
 	}
 	$("#movieList").html(movieBlock);
@@ -93,7 +93,7 @@ function addMovie(){
 </script>
 <style>
 	body {  
-		background-image: url(../background.jpg);
+		background-image: url(../MovieShow/background.jpg);
 		background-attachment: fixed;
 		background-size: cover;	
 		
