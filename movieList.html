@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 
 function JsonData(){ //returns json object
@@ -27,6 +27,7 @@ function validatePattern(searchStr){
 		event.preventDefault();
 		return;
 	}
+	searchStr = searchStr.trim();
 	return new RegExp(searchStr, 'ig');
 }//end of : validatePattern
 
@@ -49,6 +50,7 @@ function ListMovies(flag){	//list all movies from json
 		if(flag == 'S'){ // flag value for search
 			if(mainObj.data[i].Name.match(pattern)){
 				document.getElementById("movieList").innerHTML = "";
+				document.getElementById("searchcounter").value= 1;
 				movieBlock = movieBlock.concat(displayContent); 	
 			}
 			
@@ -59,7 +61,7 @@ function ListMovies(flag){	//list all movies from json
 		
 	}
 	if(flag == 'S' && movieBlock != ""){
-		movieBlock = movieBlock.concat('<div class="addMovie"><input type="text" value="" id="addSearch"><input type="button" value="Add New Search" placeholder="Enter Movie Name" onclick="addMovie()"></div>');
+		movieBlock = movieBlock.concat('<div class="addMovie"><div><input type="text" value="" id="addSearch" placeholder="Enter Movie Name"><input type="button" value="+" onclick="addMovie()"></div></div>');
 	}
 	if(movieBlock == ""){
 		alert("No such movie found");
@@ -70,7 +72,11 @@ function ListMovies(flag){	//list all movies from json
 }//end of : ListMovies
 
 function deleteMovie(indexVal){ // remove movie from list
-	document.getElementById("list_"+indexVal).style.display = "none";
+	$("#list_"+indexVal).remove();
+	if(!$('.MovieBlock').length){
+		$(".addMovie").remove();
+		$("#movieList").html('<div style="color:white;">No Record</div>');
+	}
 }//end of : deleteMovie
 
 function addMovie(){
@@ -102,6 +108,10 @@ function addMovie(){
 		width: 600px;
 		height: 32px;
 		
+	}
+	#addSearch{
+		width: 150px;
+		height: 30px;
 	}
 	#movieList{
 		margin:auto;
@@ -152,18 +162,20 @@ function addMovie(){
 		text-align: center;
 	}
 	.addMovie{
-		width:200px;
-		height:200px;
+		width:300px;
+		height:300px;
 		text-align:center;
-		border-radius:100px;
 		display: inline-block;
 		margin-left : 20px;
-		background-color: white;
+		position: relative;
+    		bottom: 100px;
 	}
 </style>
 </head>
 <body onload="ListMovies('L')"> 
-<br><form name="movieForm">
+<br>
+<form name="movieForm">
+<input type="hidden" value="" name="searchCounter" id="searchcounter">
 <div>
 <div class="searchBar">
 <a href="" onckick="ListMovies('L')" >List All Movies</a> &nbsp;
