@@ -1,26 +1,177 @@
+<!DOCTYPE html>
 <html>
-<title>Movie List</title>
 <head>
-<script type="text/javascript" src="https:///ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
-</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 
+function JsonData(){ //returns json object
+	
+	// hardcoded json string with Name,year and poster_url
+	var jsonStr ='{ "data":[{"Name": "Padmavat","year":"2018","poster_url":"https://images-na.ssl-images-amazon.com/images/M/MV5BNjY4MzY1NDg0NF5BMl5BanBnXkFtZTgwMzE4MTA3MzI@._V1_UY268_CR1,0,182,268_AL_.jpg"},'+
+			'{"Name": "Thor: Ragnarok","year":"2017","poster_url":"https://images-na.ssl-images-amazon.com/images/M/MV5BMjMyNDkzMzI1OF5BMl5BanBnXkFtZTgwODcxODg5MjI@._V1_UX182_CR0,0,182,268_AL_.jpg" },'+
+			'{"Name": "The Avengers","year":"2012","poster_url":"https://images-na.ssl-images-amazon.com/images/M/MV5BMTk2NTI1MTU4N15BMl5BanBnXkFtZTcwODg0OTY0Nw@@._V1_UX182_CR0,0,182,268_AL_.jpg"},'+
+			'{"Name": "Captain America","year":"2011","poster_url":"https://images-na.ssl-images-amazon.com/images/M/MV5BMTYzOTc2NzU3N15BMl5BanBnXkFtZTcwNjY3MDE3NQ@@._V1_UX182_CR0,0,182,268_AL_.jpg"},'+
+			'{"Name": "Iron Man","year":"2008","poster_url":"https://images-na.ssl-images-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_UX182_CR0,0,182,268_AL_.jpg"},'+
+			'{"Name": "Scooby-Doo", "year":"2002","poster_url":"https://images-na.ssl-images-amazon.com/images/M/MV5BMTg4MzMzMTY0OF5BMl5BanBnXkFtZTYwNzM3MTg2._V1_UX182_CR0,0,182,268_AL_.jpg"},'+
+			'{"Name": "The Titanic","year":"1997","poster_url":"https://images-na.ssl-images-amazon.com/images/M/MV5BMDdmZGU3NDQtY2E5My00ZTliLWIzOTUtMTY4ZGI1YjdiNjk3XkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_UX182_CR0,0,182,268_AL_.jpg"},'+
+			'{"Name": "The Flintstones", "year":"1994","poster_url":"https://images-na.ssl-images-amazon.com/images/M/MV5BNTE1MDBiZTMtNzUwNC00MGY4LTk2ZjAtNDIzMjIxZTFlNjY2L2ltYWdlL2ltYWdlXkEyXkFqcGdeQXVyNjQ2MjQ5NzM@._V1_UX182_CR0,0,182,268_AL_.jpg"},'+
+			'{"Name": "The Addams Family", "year":"1991","poster_url":"https://images-na.ssl-images-amazon.com/images/M/MV5BODc1NmY0MDUtNjUzNS00ODdhLWJlN2ItMTgwZjczZjI0MDkyXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_UY268_CR11,0,182,268_AL_.jpg"}]}';
+	var mainObj = JSON.parse(jsonStr);
+	return mainObj;
 
-$(document).ready(function(){
-alert("hello");
+}//end of : JsonData
 
-	$.getJSON('http://theapache64.com/movie_db/search?keyword=Ironman', function(data) {
+function validatePattern(searchStr){
+	if(searchStr.match(/^\s+$/) || searchStr==""){
+		alert("Enter movie name");
+		event.preventDefault();
+		return;
+	}
+	return new RegExp(searchStr, 'ig');
+}//end of : validatePattern
 
-alert(data);    
-});
+function ListMovies(flag){	//list all movies from json
+	var movieBlock = "";
+	var searchStr = "";
+	var rowBreak = "";
+	var pattern = "";
+	var counter = 0;
+	var mainObj = JsonData();
+	var objLen = mainObj.data.length;
+	
+	if(flag == 'S'){
+		searchStr = document.getElementById("search").value;
+		pattern = validatePattern(searchStr);
+	}
+	
+	for(var i=0;i<objLen;i++){
+		displayContent = '<div class="MovieBlock" id="list_'+i+'"><img class="movieImage" src='+mainObj.data[i].poster_url+'><br><div class="movieName">'+mainObj.data[i].Name+'</div><br><p>'+mainObj.data[i].year+'</p><div><input type="button" value="Remove From List" onclick="deleteMovie('+i+')"></div></div>';
+		if(flag == 'S'){ // flag value for search
+			if(mainObj.data[i].Name.match(pattern)){
+				document.getElementById("movieList").innerHTML = "";
+				movieBlock = movieBlock.concat(displayContent); 	
+			}
+			
+		}
+		else{
+			movieBlock = movieBlock.concat(displayContent); // list all movies	
+		}
+		
+	}
+	if(flag == 'S' && movieBlock != ""){
+		movieBlock = movieBlock.concat('<div class="addMovie"><input type="text" value="" id="addSearch"><input type="button" value="Add New Search" placeholder="Enter Movie Name" onclick="addMovie()"></div>');
+	}
+	if(movieBlock == ""){
+		alert("No sunch movie found");
+		return;
+	}
+	$("#movieList").html(movieBlock);
+	
+}//end of : ListMovies
 
+function deleteMovie(indexVal){ // remove movie from list
+	document.getElementById("list_"+indexVal).style.display = "none";
+}//end of : deleteMovie
 
-});
+function addMovie(){
+	var mainObj = JsonData();
+	var objLen = mainObj.data.length;
+	var searchStr = document.getElementById("addSearch").value;
+	pattern = validatePattern(searchStr);
+	var movieBlock = "";
+	for(var i=0;i<objLen;i++){
+		if($('#list_'+i).length){
+			continue;
+		}
+		if(mainObj.data[i].Name.match(pattern)){
+			movieBlock = movieBlock.concat('<div class="MovieBlock" id="list_'+i+'"><img class="movieImage" src='+mainObj.data[i].poster_url+'><br><div class="movieName">'+mainObj.data[i].Name+'</div><br><p>'+mainObj.data[i].year+'</p><div><input type="button" value="Remove From List" onclick="deleteMovie('+i+')"></div></div>'); 	
+		}
+	}
+	$(".MovieBlock:first").before(movieBlock);
+}//end of : addMovie
+
 </script>
+<style>
+	body {  
+		background-image: url(../background.jpg);
+		background-attachment: fixed;
+		background-size: cover;	
+		
+	}
+	#search{
+		width: 600px;
+		height: 32px;
+		
+	}
+	#movieList{
+		margin:auto;
+		width:85%;
+	}
+	.MovieBlock{
+		padding:20px;
+		height:350px;
+		width:200px;
+		display: inline-block;
+		margin-left : 20px;
+		margin-top : 20px;
+		position:relative;
+		background-color:rgba(255,255,255,0.7);
+	}
+	.movieName{
+		font-style:bold;
+	}
+	.movieImage{
+		height:200px;
+		width:200px;
+	}
+	a{	color: white;
+		text-decoration:none;
+		display: inline-block;
+		padding : 8px 10px;
+		background-color: #088A85;
+	}
+	a:hover{
+		color: white;
+		text-decoration:none;
+		background-color: #0B615E;
+	}
+	input[type="button"]{
+		border : none;
+		color: white;
+		background-color: #0B2F3A;
+		padding : 10px 20px;
+		text-decoration : none;
+    		
+	}
+	input[type="button"]:hover {
+    		background-color: #0A2229;
+		color: white; 
+    
+	}
+	.searchBar{
+		text-align: center;
+	}
+	.addMovie{
+		width:200px;
+		height:200px;
+		text-align:center;
+		border-radius:100px;
+		display: inline-block;
+		margin-left : 20px;
+		background-color: white;
+	}
+</style>
 </head>
-<body>
-<form name="movieForm">
-<input type="text" id="search" name="search" pattern="[a-zA-Z0-9./+'&@-]+" maxlenght="100" required >
+<body onload="ListMovies('L')"> 
+<br><form name="movieForm">
+<div>
+<div class="searchBar">
+<a href="" onckick="ListMovies('L')" >List All Movies</a> &nbsp;
+<input type="text" id="search" name="search" search for movie maxlenght="100" placeholder=" Enter movie name" required >
+<input type="button" style="background-color: #0B2F3A;color:white;" value="search" onclick="ListMovies('S')"></div>
+</div>
+<br>
+<div id="movieList" ></div>
 </form>
 </body>
 </html>
